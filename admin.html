@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Store Admin</title>
+<style>
+:root{--bg:#f4f5fa;--card:#fff;--tx:#14141f;--mu:#6b6f85;--bd:#e5e7f0;--ac:#4f46e5;--ac2:#7c3aed;--r:#e11d48;--ok:#16a34a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,sans-serif;padding:16px}
+.w{max-width:900px;margin:0 auto}h1{margin:6px 0 14px;font-size:22px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin:12px 0}
+input,textarea,select,button{font:inherit;color:var(--tx)}
+input,textarea{width:100%;padding:11px 12px;border:1px solid var(--bd);border-radius:10px;background:#fff;outline:none}
+input:focus,textarea:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(79,70,229,.14)}
+textarea{min-height:90px;resize:vertical}
+label{display:block;font-size:12.5px;font-weight:600;color:var(--mu);margin:12px 0 5px}
+.btn{padding:10px 16px;border-radius:10px;border:1px solid var(--bd);background:#fff;cursor:pointer;font-weight:600}
+.p{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border:0}.d{color:var(--r)}
+.btn:disabled{opacity:.5}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.sp{justify-content:space-between}.g{flex:1;min-width:140px}
+.tabs{display:flex;gap:8px;margin-bottom:6px}.tab{padding:10px 18px;border-radius:99px;border:1px solid var(--bd);background:#fff;cursor:pointer;font-weight:600}.tab.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.it{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--bd)}.it:first-child{border-top:0}
+.th{width:56px;height:56px;border-radius:10px;object-fit:cover;background:#eef0f7;flex:none}
+.mu{color:var(--mu);font-size:13px}.tag{font-size:11px;padding:3px 8px;border-radius:99px;background:#fee2e2;color:var(--r);font-weight:700}
+.pv{margin-top:8px;max-width:100%;max-height:160px;border-radius:10px;border:1px solid var(--bd);display:block;background:#eef0f7}
+.pv.lg{max-height:70px;padding:6px;background:#fff}
+.ov{position:fixed;inset:0;background:rgba(10,10,25,.55);z-index:30;display:grid;place-items:center;padding:14px}.ov[hidden]{display:none}
+.mo{background:#fff;border-radius:18px;padding:20px;width:100%;max-width:520px;max-height:94vh;overflow:auto}
+.msg{font-size:13px;margin-top:8px;min-height:18px}.err{color:var(--r)}.good{color:var(--ok)}
+[hidden]{display:none!important}
+</style></head><body><div class="w">
+<h1>🛠 Store Admin</h1>
+<div class="card" id="lg"><div class="row"><input id="pw" type="password" placeholder="Admin password" class="g" onkeydown="if(event.key==='Enter')login()"><button class="btn p" onclick="login()">Login</button></div><div class="msg err" id="le"></div></div>
+
+<div id="app" hidden>
+ <div class="row sp"><div class="tabs"><button class="tab on" id="t1" onclick="tab(1)">Products</button><button class="tab" id="t2" onclick="tab(2)">Website Settings</button></div>
+ <div class="row"><a class="btn" href="/" target="_blank" style="text-decoration:none;color:inherit">View Store ↗</a><button class="btn" onclick="logout()">Logout</button></div></div>
+
+ <div id="pp"><div class="row sp" style="margin-top:8px"><span class="mu" id="pc"></span><button class="btn p" onclick="openForm()">+ Add Product</button></div><div class="card" id="pl"></div></div>
+
+ <div id="ss" hidden>
+  <div class="card"><b>Logo</b><div class="mu">Website ke top-left me naam ke upar dikhega (PNG ya JPG)</div>
+   <input type="file" id="lgf" accept="image/*" onchange="up('logo','lgf','lgp','logo_url')" style="margin-top:8px"><img class="pv lg" id="lgp" hidden alt=""><button class="btn d" style="margin-top:8px" id="lgr" onclick="rm('logo_url','lgp','lgr')" hidden>Logo hatao</button></div>
+  <div class="card"><label style="margin-top:0">Website Name</label><input id="site_name" maxlength="60"></div>
+  <div class="card"><b>Hero Banner</b>
+   <label>Banner Image</label><input type="file" id="hif" accept="image/*" onchange="up('hero','hif','hip','hero_image')"><img class="pv" id="hip" hidden alt=""><button class="btn d" style="margin-top:8px" id="hir" onclick="rm('hero_image','hip','hir')" hidden>Banner image hatao</button>
+   <label>Banner Title</label><input id="hero_title" maxlength="120"><label>Banner Subtitle</label><input id="hero_subtitle" maxlength="240"><label>Button Text</label><input id="hero_cta" maxlength="30"></div>
+  <div class="card"><label style="margin-top:0">WhatsApp Number (orders yahan aayenge)</label><input id="whatsapp" inputmode="numeric" placeholder="10 digit number, jaise 9876543210"><label>Footer Text</label><input id="footer_text" maxlength="200"></div>
+  <button class="btn p" style="width:100%;padding:14px" id="sv" onclick="saveS()">Save Settings</button><div class="msg" id="sm"></div>
+ </div>
+</div></div>
+
+<div class="ov" id="fo" hidden><div class="mo">
+ <b style="font-size:18px" id="ft">Add Product</b>
+ <label>Product Name *</label><input id="pn" maxlength="120">
+ <div class="row"><div class="g"><label>Price (₹) *</label><input id="ppr" type="number" inputmode="decimal" min="0"></div><div class="g"><label>MRP (₹) — optional</label><input id="pmrp" type="number" inputmode="decimal" min="0" placeholder="cut price dikhane ke liye"></div></div>
+ <label>Category — optional</label><input id="pcat" maxlength="40" placeholder="jaise Shoes, Watches">
+ <label>Description</label><textarea id="pd" maxlength="2000"></textarea>
+ <label>Product Image</label><input type="file" id="pif" accept="image/*" onchange="upP()"><img class="pv" id="pip" hidden alt="">
+ <label style="display:flex;gap:8px;align-items:center;margin-top:14px"><input type="checkbox" id="pst" style="width:auto" checked> In stock</label>
+ <div class="msg err" id="fe"></div>
+ <div class="row" style="margin-top:10px"><button class="btn p g" id="fs" onclick="saveP()">Save Product</button><button class="btn" onclick="closeForm()">Cancel</button></div>
+</div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>'₹'+Number(n).toLocaleString('en-IN',{maximumFractionDigits:2});
+let T=localStorage.getItem('adm_t')||'',P=[],ST={},edit=null,pimg='',IMG={logo_url:'',hero_image:''};
+async function api(a,body,qs=''){const r=await fetch('/api?a='+a+qs,{method:body?'POST':'GET',headers:{'Content-Type':'application/json',...(T?{Authorization:'Bearer '+T}:{})},body:body?JSON.stringify(body):undefined});const j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(j.error||'Error');e.status=r.status;throw e}return j}
+async function login(){$('le').textContent='';try{const j=await api('login',{password:$('pw').value});T=j.token;localStorage.setItem('adm_t',T);load()}catch(e){$('le').textContent=e.message}}
+function logout(){T='';localStorage.removeItem('adm_t');location.reload()}
+function tab(n){$('pp').hidden=n!==1;$('ss').hidden=n!==2;$('t1').className='tab'+(n===1?' on':'');$('t2').className='tab'+(n===2?' on':'')}
+async function load(){
+ try{const j=await api('store');ST=j.settings||{};P=j.products||[];
+  await api('savesettings',{settings:{}});
+  $('lg').hidden=true;$('app').hidden=false;renderP();fillS()}
+ catch(e){$('lg').hidden=false;$('app').hidden=true;if(T&&e.status===401){T='';localStorage.removeItem('adm_t')}else if(T)$('le').textContent=e.message}}
+function renderP(){$('pc').textContent=P.length+' products';
+ $('pl').innerHTML=P.length?P.map(p=>`<div class="it">${p.image_url?`<img class="th" src="${esc(p.image_url)}" alt="">`:'<div class="th"></div>'}<div style="flex:1;min-width:0"><b>${esc(p.name)}</b> ${p.in_stock?'':'<span class="tag">Out of stock</span>'}<div class="mu">${money(p.price)}${p.mrp?` <s>${money(p.mrp)}</s>`:''}${p.category?' · '+esc(p.category):''}</div></div>
+ <div class="row"><button class="btn" onclick="openForm('${p.id}')">Edit</button><button class="btn d" onclick="delP('${p.id}')">Delete</button></div></div>`).join(''):'<div class="mu">Abhi koi product nahi hai. "+ Add Product" dabao.</div>'}
+function openForm(id){edit=id||null;const p=id?P.find(x=>x.id===id):null;
+ $('ft').textContent=p?'Edit Product':'Add Product';$('pn').value=p?p.name:'';$('ppr').value=p?p.price:'';$('pmrp').value=p&&p.mrp?p.mrp:'';$('pcat').value=p?(p.category||''):'';$('pd').value=p?(p.description||''):'';$('pst').checked=p?p.in_stock:true;
+ pimg=p?(p.image_url||''):'';$('pif').value='';const v=$('pip');if(pimg){v.src=pimg;v.hidden=false}else v.hidden=true;$('fe').textContent='';$('fo').hidden=false}
+function closeForm(){$('fo').hidden=true}
+function toB64(file,max,type,q){return new Promise((res,rej)=>{const img=new Image(),u=URL.createObjectURL(file);
+ img.onload=()=>{let w=img.width,h=img.height;if(Math.max(w,h)>max){const r=max/Math.max(w,h);w=Math.round(w*r);h=Math.round(h*r)}
+  const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
+  if(type==='image/jpeg'){x.fillStyle='#fff';x.fillRect(0,0,w,h)}x.drawImage(img,0,0,w,h);
+  let d=c.toDataURL(type,q);if(type==='image/png'&&d.length>2.6e6){x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(img,0,0,w,h);d=c.toDataURL('image/jpeg',.85)}
+  URL.revokeObjectURL(u);res(d.split(',')[1])};
+ img.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('Ye image khul nahi rahi, dusri chuno'))};img.src=u})}
+async function upP(){const f=$('pif').files[0];if(!f)return;$('fe').textContent='Image upload ho rahi hai…';$('fs').disabled=true;
+ try{const d=await toB64(f,1100,'image/jpeg',.85);const j=await api('upload',{kind:'product',data:d});pimg=j.url;$('pip').src=j.url;$('pip').hidden=false;$('fe').textContent=''}
+ catch(e){$('fe').textContent=e.message}$('fs').disabled=false}
+async function saveP(){$('fe').textContent='';$('fs').disabled=true;
+ try{await api('saveproduct',{id:edit,name:$('pn').value,price:$('ppr').value,mrp:$('pmrp').value,category:$('pcat').value,description:$('pd').value,image_url:pimg,in_stock:$('pst').checked});closeForm();await load()}
+ catch(e){$('fe').textContent=e.message}$('fs').disabled=false}
+async function delP(id){if(!confirm('Ye product delete karna hai?'))return;try{await api('delproduct',{id});await load()}catch(e){alert(e.message)}}
+function showImg(key,pid,rid){const v=$(pid),r=$(rid);if(IMG[key]){v.src=IMG[key];v.hidden=false;r.hidden=false}else{v.hidden=true;r.hidden=true}}
+function fillS(){['site_name','hero_title','hero_subtitle','hero_cta','whatsapp','footer_text'].forEach(k=>$(k).value=ST[k]||'');
+ IMG.logo_url=ST.logo_url||'';IMG.hero_image=ST.hero_image||'';showImg('logo_url','lgp','lgr');showImg('hero_image','hip','hir')}
+async function up(kind,fid,pid,key){const f=$(fid).files[0];if(!f)return;const m=$('sm');m.className='msg';m.textContent='Image upload ho rahi hai…';
+ try{const png=f.type==='image/png';const d=kind==='logo'?await toB64(f,500,png?'image/png':'image/jpeg',.9):await toB64(f,1920,'image/jpeg',.82);
+  const j=await api('upload',{kind,data:d});IMG[key]=j.url;showImg(key,pid,key==='logo_url'?'lgr':'hir');m.className='msg good';m.textContent='Image upload ho gayi. Ab "Save Settings" dabao.'}
+ catch(e){m.className='msg err';m.textContent=e.message}}
+function rm(key,pid,rid){IMG[key]='';showImg(key,pid,rid);$('sm').className='msg good';$('sm').textContent='Hata diya. Ab "Save Settings" dabao.'}
+async function saveS(){const m=$('sm');m.className='msg';m.textContent='';$('sv').disabled=true;
+ const s={logo_url:IMG.logo_url,hero_image:IMG.hero_image};['site_name','hero_title','hero_subtitle','hero_cta','whatsapp','footer_text'].forEach(k=>s[k]=$(k).value);
+ try{await api('savesettings',{settings:s});m.className='msg good';m.textContent='✅ Settings save ho gayi. Store page refresh karke dekho.';ST={...ST,...s}}
+ catch(e){m.className='msg err';m.textContent=e.message}$('sv').disabled=false}
+if(T)load();
+</script></body></html>

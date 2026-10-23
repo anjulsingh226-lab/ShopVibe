@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Store</title>
+<link rel="icon" id="fav" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f7fb;--card:#fff;--tx:#14141f;--mu:#6b6f85;--bd:#e7e8f0;--ac:#4f46e5;--ac2:#7c3aed;--ok:#16a34a;--r:#e11d48}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--bd)}
+.hd{max-width:1180px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-decoration:none;color:var(--tx);min-width:0}
+.brand img{height:38px;max-width:140px;object-fit:contain;display:block}
+.brand span{font-weight:800;font-size:18px;letter-spacing:-.01em;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60vw}
+.cartbtn{position:relative;border:1px solid var(--bd);background:var(--card);border-radius:12px;padding:10px 14px;font:inherit;font-weight:600;cursor:pointer;display:flex;gap:8px;align-items:center}
+.cartbtn b{background:var(--ac);color:#fff;border-radius:99px;min-width:20px;height:20px;font-size:12px;display:grid;place-items:center;padding:0 6px}
+.hero{position:relative;min-height:340px;display:flex;align-items:center;overflow:hidden;background:linear-gradient(135deg,#312e81,#7c3aed 55%,#db2777)}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,10,30,.68),rgba(10,10,30,.15))}
+.hero .in{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:50px 18px;color:#fff;width:100%}
+.hero h1{font-size:clamp(28px,5.2vw,52px);line-height:1.08;margin:0 0 12px;max-width:640px;letter-spacing:-.02em}
+.hero p{font-size:clamp(15px,2vw,18px);margin:0 0 24px;max-width:520px;opacity:.92;line-height:1.55}
+.cta{display:inline-block;background:#fff;color:#1e1b4b;border:0;border-radius:12px;padding:14px 28px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 18px}
+.bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:18px}
+.bar h2{margin:0;font-size:22px}
+input,textarea{font:inherit;color:var(--tx)}
+.srch{padding:11px 14px;border:1px solid var(--bd);border-radius:12px;min-width:220px;background:var(--card);outline:none}
+.srch:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px}
+.chip{border:1px solid var(--bd);background:var(--card);border-radius:99px;padding:8px 16px;font:inherit;font-size:14px;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}
+.pc{background:var(--card);border:1px solid var(--bd);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:.2s}
+.pc:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(20,20,60,.12)}
+.pi{position:relative;aspect-ratio:1/1;background:#eef0f7;cursor:pointer;display:grid;place-items:center;color:var(--mu);font-size:13px}
+.pi img{width:100%;height:100%;object-fit:cover;display:block}
+.badge{position:absolute;top:10px;left:10px;background:var(--r);color:#fff;font-size:12px;font-weight:700;border-radius:8px;padding:4px 8px}
+.badge.out{background:#111;left:auto;right:10px}
+.pb{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.pn{font-weight:600;font-size:15px;line-height:1.35;cursor:pointer}
+.pcat{color:var(--mu);font-size:12px}
+.pr{display:flex;gap:8px;align-items:baseline;margin-top:auto}
+.pr b{font-size:18px}.pr s{color:var(--mu);font-size:13px}
+.add{margin-top:8px;border:0;border-radius:12px;padding:11px;font:inherit;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--ac),var(--ac2))}
+.add:disabled{background:#c9cbd8;cursor:not-allowed}
+.empty{text-align:center;color:var(--mu);padding:60px 10px}
+.ov{position:fixed;inset:0;background:rgba(10,10,25,.55);z-index:40;display:flex;justify-content:flex-end}
+.ov[hidden]{display:none}
+.drawer{background:#fff;width:min(420px,100%);height:100%;display:flex;flex-direction:column}
+.dh{padding:16px 18px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:18px}
+.x{border:0;background:var(--bg);width:36px;height:36px;border-radius:10px;font-size:18px;cursor:pointer}
+.db{flex:1;overflow:auto;padding:8px 18px}
+.ci{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--bd)}
+.ci img,.ci .ph{width:64px;height:64px;border-radius:10px;object-fit:cover;background:#eef0f7;flex:none}
+.ci .n{font-weight:600;font-size:14px}.ci .p{color:var(--mu);font-size:13px;margin-top:2px}
+.qty{display:flex;align-items:center;gap:10px;margin-top:8px}
+.qty button{width:28px;height:28px;border-radius:8px;border:1px solid var(--bd);background:#fff;cursor:pointer;font-size:16px}
+.df{padding:16px 18px;border-top:1px solid var(--bd)}
+.tot{display:flex;justify-content:space-between;font-weight:800;font-size:18px;margin-bottom:12px}
+.wa{width:100%;border:0;border-radius:12px;padding:14px;font:inherit;font-weight:700;color:#fff;background:#16a34a;cursor:pointer;font-size:16px}
+.note{color:var(--mu);font-size:12.5px;margin-top:8px;text-align:center}
+.md{position:fixed;inset:0;background:rgba(10,10,25,.6);z-index:50;display:grid;place-items:center;padding:16px}
+.md[hidden]{display:none}
+.mc{background:#fff;border-radius:20px;max-width:760px;width:100%;max-height:92vh;overflow:auto;display:grid;grid-template-columns:1fr 1fr}
+.mc .im{background:#eef0f7;min-height:260px}.mc .im img{width:100%;height:100%;object-fit:cover;display:block}
+.mc .tx{padding:22px;position:relative}
+.mc h3{margin:0 0 8px;font-size:22px}.mc .ds{color:var(--mu);line-height:1.65;white-space:pre-wrap;font-size:14.5px;margin:12px 0}
+.mx{position:absolute;top:12px;right:12px}
+@media(max-width:640px){.mc{grid-template-columns:1fr}.mc .im{min-height:220px;max-height:300px}}
+footer{text-align:center;color:var(--mu);font-size:13px;padding:34px 18px;border-top:1px solid var(--bd);margin-top:20px}
+footer b{color:var(--tx)}
+</style></head><body>
+<header><div class="hd">
+ <a class="brand" href="#top"><img id="logo" alt="" hidden><span id="sn">Store</span></a>
+ <button class="cartbtn" onclick="openCart()">🛒 Cart <b id="cc">0</b></button>
+</div></header>
+<section class="hero" id="top"><img id="himg" alt="" hidden><div class="in"><h1 id="ht"></h1><p id="hs"></p><a class="cta" id="hc" href="#shop"></a></div></section>
+<div class="wrap" id="shop">
+ <div class="bar"><h2>Our Products</h2><input class="srch" id="q" placeholder="Search products…" oninput="render()"></div>
+ <div class="chips" id="chips"></div>
+ <div class="grid" id="grid"></div>
+</div>
+<footer><b id="fn"></b><div id="ft" style="margin-top:6px"></div></footer>
+
+<div class="ov" id="cov" hidden onclick="if(event.target===this)closeCart()"><div class="drawer">
+ <div class="dh"><span>Your Cart</span><button class="x" onclick="closeCart()">✕</button></div>
+ <div class="db" id="cb"></div>
+ <div class="df" id="cf"></div>
+</div></div>
+<div class="md" id="pm" hidden onclick="if(event.target===this)closeP()"><div class="mc" id="pmc"></div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>'₹'+Number(n).toLocaleString('en-IN',{maximumFractionDigits:2});
+let ST={},P=[],cat='',cart={};
+try{cart=JSON.parse(localStorage.getItem('cart_v1')||'{}')||{}}catch(e){cart={}}
+function saveCart(){try{localStorage.setItem('cart_v1',JSON.stringify(cart))}catch(e){}}
+async function load(){
+ try{const r=await fetch('/api?a=store');const j=await r.json();if(!r.ok)throw new Error(j.error||'error');ST=j.settings||{};P=j.products||[]}
+ catch(e){$('grid').innerHTML='<div class="empty">Store load nahi ho paya. Thodi der baad try karo.</div>';ST={site_name:'Store'}}
+ applySettings();
+ Object.keys(cart).forEach(id=>{if(!P.find(p=>p.id===id))delete cart[id]});saveCart();
+ render();
+}
+function applySettings(){
+ const n=ST.site_name||'Store';document.title=n;$('sn').textContent=n;$('fn').textContent=n;$('ft').textContent=ST.footer_text||'';
+ const lg=$('logo');if(ST.logo_url){lg.src=ST.logo_url;lg.alt=n;lg.hidden=false;$('fav').href=ST.logo_url}else{lg.hidden=true}
+ const hi=$('himg');if(ST.hero_image){hi.src=ST.hero_image;hi.hidden=false}else{hi.hidden=true}
+ $('ht').textContent=ST.hero_title||n;$('hs').textContent=ST.hero_subtitle||'';
+ const hc=$('hc');hc.textContent=ST.hero_cta||'Shop Now';hc.hidden=!(ST.hero_cta||'Shop Now');
+}
+function render(){
+ const cats=[...new Set(P.map(p=>p.category).filter(Boolean))];
+ $('chips').innerHTML=cats.length?['',...cats].map(c=>`<button class="chip ${c===cat?'on':''}" data-c="${esc(c)}">${c?esc(c):'All'}</button>`).join(''):'';
+ document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{cat=b.dataset.c;render()});
+ const s=($('q').value||'').toLowerCase().trim();
+ const L=P.filter(p=>(!cat||p.category===cat)&&(!s||(p.name+' '+(p.category||'')).toLowerCase().includes(s)));
+ $('grid').innerHTML=L.length?L.map(card).join(''):'<div class="empty" style="grid-column:1/-1">'+(P.length?'Koi product nahi mila.':'Products jald aa rahe hain…')+'</div>';
+ updCart();
+}
+function disc(p){return p.mrp&&Number(p.mrp)>Number(p.price)?Math.round((1-p.price/p.mrp)*100):0}
+function card(p){const d=disc(p);
+ return `<div class="pc"><div class="pi" onclick="openP('${p.id}')">${p.image_url?`<img src="${esc(p.image_url)}" alt="${esc(p.name)}" loading="lazy">`:'No image'}${d?`<span class="badge">${d}% OFF</span>`:''}${p.in_stock?'':'<span class="badge out">Out of stock</span>'}</div>
+ <div class="pb">${p.category?`<div class="pcat">${esc(p.category)}</div>`:''}<div class="pn" onclick="openP('${p.id}')">${esc(p.name)}</div>
+ <div class="pr"><b>${money(p.price)}</b>${d?`<s>${money(p.mrp)}</s>`:''}</div>
+ <button class="add" ${p.in_stock?'':'disabled'} onclick="addCart('${p.id}')">${p.in_stock?'Add to Cart':'Out of Stock'}</button></div></div>`}
+function openP(id){const p=P.find(x=>x.id===id);if(!p)return;const d=disc(p);
+ $('pmc').innerHTML=`<div class="im">${p.image_url?`<img src="${esc(p.image_url)}" alt="${esc(p.name)}">`:''}</div><div class="tx"><button class="x mx" onclick="closeP()">✕</button>
+ ${p.category?`<div class="pcat">${esc(p.category)}</div>`:''}<h3>${esc(p.name)}</h3>
+ <div class="pr"><b style="font-size:24px">${money(p.price)}</b>${d?`<s>${money(p.mrp)}</s><span class="badge" style="position:static">${d}% OFF</span>`:''}</div>
+ <div class="ds">${esc(p.description||'')}</div>
+ <button class="add" style="width:100%" ${p.in_stock?'':'disabled'} onclick="addCart('${p.id}');closeP()">${p.in_stock?'Add to Cart':'Out of Stock'}</button></div>`;
+ $('pm').hidden=false}
+function closeP(){$('pm').hidden=true}
+function addCart(id){cart[id]=(cart[id]||0)+1;saveCart();updCart();openCart()}
+function chg(id,d){cart[id]=(cart[id]||0)+d;if(cart[id]<=0)delete cart[id];saveCart();updCart();drawCart()}
+function updCart(){$('cc').textContent=Object.values(cart).reduce((a,b)=>a+b,0)}
+function openCart(){drawCart();$('cov').hidden=false}
+function closeCart(){$('cov').hidden=true}
+function drawCart(){
+ const items=Object.keys(cart).map(id=>({p:P.find(x=>x.id===id),q:cart[id]})).filter(x=>x.p);
+ if(!items.length){$('cb').innerHTML='<div class="empty">Cart khali hai</div>';$('cf').innerHTML='';return}
+ $('cb').innerHTML=items.map(({p,q})=>`<div class="ci">${p.image_url?`<img src="${esc(p.image_url)}" alt="">`:'<div class="ph"></div>'}<div style="flex:1"><div class="n">${esc(p.name)}</div><div class="p">${money(p.price)}</div>
+ <div class="qty"><button onclick="chg('${p.id}',-1)">−</button><b>${q}</b><button onclick="chg('${p.id}',1)">+</button></div></div><b>${money(p.price*q)}</b></div>`).join('');
+ const t=items.reduce((a,{p,q})=>a+p.price*q,0);
+ $('cf').innerHTML=`<div class="tot"><span>Total</span><span>${money(t)}</span></div><button class="wa" onclick="checkout()">Order on WhatsApp</button><div class="note">Order WhatsApp par seller ko bheja jayega.</div>`;
+}
+function checkout(){
+ let num=String(ST.whatsapp||'').replace(/\D/g,'');
+ if(!num)return alert('Seller ne abhi WhatsApp number set nahi kiya hai.');
+ if(num.length===10)num='91'+num;
+ const items=Object.keys(cart).map(id=>({p:P.find(x=>x.id===id),q:cart[id]})).filter(x=>x.p);
+ if(!items.length)return;
+ let t=0;const lines=items.map(({p,q},i)=>{t+=p.price*q;return (i+1)+'. '+p.name+' x'+q+' - '+money(p.price*q)});
+ const msg='Hello! Mujhe ye order karna hai:\n\n'+lines.join('\n')+'\n\nTotal: '+money(t)+'\n\nMera naam:\nAddress:';
+ window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
+}
+load();
+</script></body></html>

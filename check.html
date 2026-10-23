@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Store Setup Check</title>
+<style>
+body{margin:0;background:#07060d;color:#f3f1fa;font-family:system-ui,sans-serif;padding:20px;background-image:radial-gradient(700px 400px at 85% -5%,rgba(139,92,246,.25),transparent)}
+.w{max-width:620px;margin:0 auto}h1{letter-spacing:.15em;font-size:22px;background:linear-gradient(90deg,#f5c76b,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.c{border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.05);border-radius:14px;padding:14px 16px;margin:10px 0}
+.ok{border-color:rgba(52,211,153,.5)}.bad{border-color:rgba(255,93,122,.6)}.m{color:#9b96b3;font-size:13px;margin-top:4px}
+.big{font-size:18px;font-weight:700;margin:14px 0}button{padding:10px 16px;border-radius:10px;border:0;background:linear-gradient(135deg,#f5c76b,#8b5cf6);font-weight:700;cursor:pointer}
+</style></head><body><div class="w"><h1>STORE SETUP CHECK</h1><div class="big" id="big">Checking…</div><div id="l"></div><button onclick="run()">Dobara check karo</button></div>
+<script>
+async function run(){const l=document.getElementById('l'),big=document.getElementById('big');l.innerHTML='';big.textContent='Checking…';
+ let j;try{const r=await fetch('/api?a=health');const t=await r.text();try{j=JSON.parse(t)}catch{big.textContent='❌ API mili hi nahi (404)';l.innerHTML='<div class="c bad"><b>api/index.js</b><div class="m">GitHub repository me <b>api</b> naam ka folder aur uske andar <b>index.js</b> hona chahiye. Phir Vercel me naya deployment Ready hone do.</div></div>';return}}catch(e){big.textContent='❌ Site se connect nahi hua';return}
+ big.textContent=j.ok?'✅ Sab kuch sahi hai! Website use kar sakte ho.':'❌ Neeche laal wali cheezein theek karo';
+ l.innerHTML=j.checks.map(c=>`<div class="c ${c.ok?'ok':'bad'}"><b>${c.ok?'✅':'❌'} ${c.name}</b><div class="m">${c.msg}</div></div>`).join('')}
+run();
+</script></body></html>
